@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "CodeSampleGrpc";
+
+package project;
+
+service ProjectRpcService{
+	rpc GetProjectName(ProjectRequest) returns (ProjectResponse){}
+}
+
+message ProjectResponse{
+	string projectName = 1;
+}
+message ProjectRequest{
+	int32 projectId = 1;
+}

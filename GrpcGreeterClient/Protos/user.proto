@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+option csharp_namespace = "CodeSampleGrpc";
+
+package user;
+
+service UserRpcService{
+	rpc GetUserName(UserNameRequest) returns (UserNameResponse){};
+	rpc GetUserBody(UserBodyRequest) returns (UserbodyResponse){};
+}
+message UserBodyRequest{
+	string id = 1;
+}
+message UserbodyResponse{
+	Person person = 1;
+}
+
+message Person{
+	int32 userId = 1;
+	string userName = 2;
+	enum Sex{
+		man = 0;
+		woman = 1;
+	}
+	Sex sex = 3;
+}
+message UserNameRequest{
+	string userId = 1;
+}
+message UserNameResponse{
+	string userName = 1;
+	int32 oldValue = 3[deprecated=true];
+	repeated int32 samples = 4 [packed=true];
+	repeated bytes images = 5;
+}
+
