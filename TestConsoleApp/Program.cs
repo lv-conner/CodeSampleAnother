@@ -10,6 +10,10 @@ namespace TestConsoleApp
     {
         static void Main(string[] args)
         {
+            var year = 10;
+            var nextYear = ++year;
+
+
             IServiceCollection services = new ServiceCollection();
             services.AddMemoryQueueEventBus();
             var provider = services.BuildServiceProvider();
