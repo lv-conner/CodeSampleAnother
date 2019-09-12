@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,22 +13,58 @@ namespace CodeSampleConsoleApp
     {
         static async Task Main(string[] args)
         {
-            var host = new HostBuilder()
-                .ConfigureServices((hostBuilderContext, services) =>
-                {
-                    services.AddHostedService<SampleBackgroundTask>();
-                    //services.AddHostedService<AnotherSampleHostedService>();
+            //var host = new HostBuilder()
+            //    .ConfigureServices((hostBuilderContext, services) =>
+            //    {
+            //        services.AddHostedService<SampleBackgroundTask>();
+            //        //services.AddHostedService<AnotherSampleHostedService>();
 
-                });
-            await  host.RunConsoleAsync();
-            Console.WriteLine("Stop");
+            //    });
+            //await  host.RunConsoleAsync();
+            //Console.WriteLine("Stop");
+            List<IHostedService> services = new List<IHostedService>();
+            services.Add(new HostedService());
+            services.Add(new HostedService());
+            services.Add(new HostedService());
+            services.Add(new HostedService());
+
+            foreach (var item in services)
+            {
+                await item.StartAsync(CancellationToken.None).ConfigureAwait(false);
+                Console.WriteLine("Start Complete");
+            }
+            Console.WriteLine("1111");
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            await new SampleBackgroundTask().StartAsync(CancellationToken.None).ConfigureAwait(true);
+            Console.WriteLine("2222");
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+
+
+            Console.ReadKey();
         }
 
     }
+    public class HostedService : IHostedService
+    {
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            Console.WriteLine("start");
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            HttpClient client = new HttpClient();
+            var res = await client.GetAsync("https://www.bing.com").ConfigureAwait(false);
+            Console.WriteLine(res.StatusCode);
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 
     public class SampleBackgroundTask : BackgroundService
     {
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             //while (!stoppingToken.IsCancellationRequested)
             //{
@@ -45,14 +83,19 @@ namespace CodeSampleConsoleApp
             //    });
             //    await Task.Delay(1000);
             //}
-            return Task.Run(async () =>
-            {
-                while (!stoppingToken.IsCancellationRequested)
-                {
-                    Console.WriteLine(DateTime.Now);
-                    await Task.Delay(1000);
-                }
-            });
+            Console.WriteLine("start");
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            HttpClient client = new HttpClient();
+            var res = await client.GetAsync("https://www.bing.com");
+            Console.WriteLine(res.StatusCode);
+            //return Task.Run(async () =>
+            //{
+            //    while (!stoppingToken.IsCancellationRequested)
+            //    {
+            //        Console.WriteLine(DateTime.Now);
+            //        await Task.Delay(1000);
+            //    }
+            //});
         }
     }
 
