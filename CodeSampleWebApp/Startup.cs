@@ -38,12 +38,12 @@ namespace CodeSampleWebApp
             {
                 
             })
-            .AddControllersAsServices()
+            //.AddControllersAsServices()
             .AddDataAnnotationsLocalization(options =>
             {
 
             })
-            .AddApplicationPart(null)
+            //.AddApplicationPart(null)
             .AddCookieTempDataProvider()
             .ConfigureApiBehaviorOptions(options =>
             {
